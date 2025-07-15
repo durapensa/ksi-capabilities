@@ -1,0 +1,18 @@
+name: federated_test_capability
+type: capability
+version: 1.0.0
+description: Test capability for federated architecture
+author: federated_test_system
+capabilities:
+  federated_test:
+    description: Test capability for federated systems
+    events:
+    - federated:test
+    permissions:
+    - read
+    - write
+metadata:
+  tags:
+  - federated
+  - test
+  scope: system
