@@ -1,0 +1,368 @@
+# KSI Tiered Capability Collection v2.0
+# Designed for progressive enhancement and DSL bootstrap support
+# Created by: Claude as Overseer Agent Prototype
+# Date: 2025-01-26
+
+version: "2.0"
+description: "Tiered capability system with all events mapped and DSL execution support"
+philosophy: |
+  This tiered system enables progressive capability enhancement while ensuring
+  all events are accessible at appropriate trust levels. The design supports
+  DSL bootstrap requirements and future system evolution.
+
+# Tier 1: Minimal - Absolute minimum for any agent
+tiers:
+  minimal:
+    description: "Bare minimum - system interaction only"
+    capabilities: ["system_access"]
+    
+  # Tier 2: Observer - Can observe but not affect system
+  observer:
+    description: "Read-only observation of system state"
+    inherits: "minimal"
+    additional_capabilities: ["state_observe", "event_monitor"]
+    
+  # Tier 3: Communicator - Can communicate and track state
+  communicator:
+    description: "Basic communication and state tracking"
+    inherits: "observer"
+    additional_capabilities: ["message_basic", "state_tracking"]
+    
+  # Tier 4: Executor - Can execute DSL and perform work
+  executor:
+    description: "DSL execution and task performance"
+    inherits: "communicator"
+    additional_capabilities: ["dsl_execution", "task_performance"]
+    
+  # Tier 5: Coordinator - Can spawn and coordinate agents
+  coordinator:
+    description: "Agent spawning and coordination"
+    inherits: "executor"
+    additional_capabilities: ["agent_lifecycle", "workflow_coordination"]
+    
+  # Tier 6: Orchestrator - Full orchestration capabilities
+  orchestrator:
+    description: "Complex multi-agent orchestration"
+    inherits: "coordinator"
+    additional_capabilities: ["orchestration_control", "composition_management"]
+    
+  # Tier 7: Administrator - System management
+  administrator:
+    description: "System configuration and management"
+    inherits: "orchestrator"
+    additional_capabilities: ["system_configuration", "permission_management"]
+    
+  # Tier 8: Overseer - Complete system control
+  overseer:
+    description: "Full system access including capability modification"
+    inherits: "administrator"
+    additional_capabilities: ["capability_evolution", "system_evolution"]
+
+# Capability definitions with complete event mappings
+capabilities:
+  # Foundation capabilities
+  system_access:
+    description: "Core system interaction"
+    events:
+      - "system:health"
+      - "system:help"
+      - "system:discover"
+    always_enabled: true
+    
+  # Observation capabilities
+  state_observe:
+    description: "Read-only state access"
+    events:
+      - "state:get"
+      - "state:list"
+      - "state:exists"
+      - "state:entity:get"
+      - "state:entity:list"
+      - "state:entity:query"
+      
+  event_monitor:
+    description: "Event stream monitoring"
+    events:
+      - "monitor:get_events"
+      - "monitor:get_status"
+      - "monitor:get_stats"
+      - "message_bus:stats"
+      
+  # Communication capabilities
+  message_basic:
+    description: "Basic messaging"
+    events:
+      - "message:publish"
+      - "message:subscribe"
+      - "message:unsubscribe"
+      - "message:subscriptions"
+      - "message:send"  # Direct messaging
+      
+  state_tracking:
+    description: "State updates and entity management"
+    events:
+      - "state:set"
+      - "state:delete"
+      - "state:clear"
+      - "state:entity:create"
+      - "state:entity:update"
+      - "state:entity:delete"
+      - "state:entity:add_relationship"
+      - "state:entity:remove_relationship"
+      
+  # Execution capabilities (CRITICAL FOR DSL)
+  dsl_execution:
+    description: "DSL interpretation and execution"
+    events:
+      - "agent:status"      # Report execution status
+      - "agent:progress"    # Report progress updates
+      - "agent:result"      # Report execution results
+      - "completion:async"  # Send messages to other agents
+      - "orchestration:request_termination"  # Signal completion
+      - "task:assign"       # Delegate tasks (for DSL)
+      - "workflow:complete" # Signal workflow completion
+      
+  task_performance:
+    description: "Task execution and async operations"
+    events:
+      - "async_state:push"
+      - "async_state:pop"
+      - "async_state:peek"
+      - "async_state:get"
+      - "async_state:set"
+      - "async_state:delete"
+      - "async_state:queue_length"
+      
+  # Coordination capabilities
+  agent_lifecycle:
+    description: "Agent spawning and management"
+    events:
+      - "agent:spawn"
+      - "agent:spawn_from_component"
+      - "agent:terminate"
+      - "agent:restart"
+      - "agent:list"
+      - "agent:info"
+      - "agent:update_config"
+      - "agent:send_message"
+      
+  workflow_coordination:
+    description: "Multi-agent workflow management"
+    events:
+      - "orchestration:start"
+      - "orchestration:stop"
+      - "orchestration:status"
+      - "orchestration:list"
+      - "orchestration:event"  # Receive orchestration events
+      - "conversation:create"
+      - "conversation:list"
+      - "conversation:acquire_lock"
+      - "conversation:release_lock"
+      
+  # Orchestration capabilities
+  orchestration_control:
+    description: "Full orchestration control"
+    events:
+      - "orchestration:create"
+      - "orchestration:update"
+      - "orchestration:delete"
+      - "orchestration:discover"
+      - "orchestration:validate"
+      
+  composition_management:
+    description: "Component and composition management"
+    events:
+      - "composition:list"
+      - "composition:get"
+      - "composition:get_component"
+      - "composition:discover"
+      - "composition:validate"
+      - "composition:compose"
+      - "composition:create_component"
+      - "composition:update_component"
+      - "composition:delete_component"
+      - "composition:rebuild_index"
+      
+  # Administrative capabilities
+  system_configuration:
+    description: "System configuration management"
+    events:
+      - "config:get"
+      - "config:set"
+      - "config:list"
+      - "config:reload"
+      - "monitor:clear_log"
+      - "cache:clear"
+      - "checkpoint:create"
+      - "checkpoint:restore"
+      
+  permission_management:
+    description: "Permission system management"
+    events:
+      - "permission:get_agent"
+      - "permission:get_profile"
+      - "permission:list_profiles"
+      - "permission:update_profile"
+      - "permission:create_profile"
+      
+  # Evolution capabilities
+  capability_evolution:
+    description: "Modify capability mappings"
+    events:
+      - "capability:list"
+      - "capability:get"
+      - "capability:update"
+      - "capability:create"
+      - "capability:delete"
+      - "capability:reload_mappings"
+      
+  system_evolution:
+    description: "Core system modification"
+    events:
+      - "system:reload"
+      - "system:update_core"
+      - "system:add_handler"
+      - "system:remove_handler"
+      - "system:list_handlers"
+      - "system:introspect"
+
+# Claude tool mappings remain the same
+claude_tools:
+  file_access:
+    description: "File system access via Claude tools"
+    tools:
+      - "Read"
+      - "Write"
+      - "Edit"
+      - "MultiEdit"
+      - "Grep"
+      - "Glob"
+      - "LS"
+      - "NotebookRead"
+      - "NotebookEdit"
+      
+  system_access:
+    description: "System command execution"
+    tools:
+      - "Bash"
+      - "Task"
+      
+  network_access:
+    description: "External API and web access"
+    tools:
+      - "WebFetch"
+      - "WebSearch"
+      
+  multi_agent_todo:
+    description: "Shared task management"
+    tools:
+      - "TodoRead"
+      - "TodoWrite"
+
+# Security profiles using the tier system
+security_profiles:
+  # Basic profiles map to tiers
+  minimal:
+    tier: "minimal"
+    description: "Absolute minimum access"
+    
+  observer:
+    tier: "observer"
+    description: "Read-only system observer"
+    
+  standard:
+    tier: "communicator"
+    description: "Standard agent with communication"
+    claude_tools: ["file_access"]
+    
+  # DSL-specific profile
+  dsl_interpreter:
+    tier: "executor"
+    description: "DSL interpreter with execution capabilities"
+    claude_tools: ["file_access"]
+    
+  # Advanced profiles
+  coordinator:
+    tier: "coordinator"
+    description: "Multi-agent coordinator"
+    claude_tools: ["file_access", "multi_agent_todo"]
+    
+  orchestrator:
+    tier: "orchestrator"
+    description: "Full orchestration capabilities"
+    claude_tools: ["file_access", "multi_agent_todo", "system_access"]
+    
+  administrator:
+    tier: "administrator"
+    description: "System administrator"
+    claude_tools: ["file_access", "multi_agent_todo", "system_access"]
+    
+  overseer:
+    tier: "overseer"
+    description: "Complete system access"
+    claude_tools: ["file_access", "multi_agent_todo", "system_access", "network_access"]
+
+# Optimization-specific events (for DSPy/MIPRO integration)
+optimization_events:
+  description: "Events for optimization workflows"
+  capability: "dsl_execution"  # Part of executor tier
+  events:
+    - "optimization:async"
+    - "optimization:status"
+    - "optimization:cancel"
+    - "optimization:list"
+    - "optimization:get_result"
+    - "optimization:process_completion"
+    
+# Evaluation events
+evaluation_events:
+  description: "Events for evaluation workflows"
+  capability: "dsl_execution"  # Part of executor tier
+  events:
+    - "evaluation:start"
+    - "evaluation:status"
+    - "evaluation:result"
+    - "evaluation:compare"
+    - "evaluation:tournament"
+
+# Future extension points
+extension_points:
+  mcp_integration:
+    description: "Model Context Protocol integration"
+    planned_events:
+      - "mcp:connect"
+      - "mcp:disconnect"
+      - "mcp:list_tools"
+      - "mcp:invoke_tool"
+      
+  git_integration:
+    description: "Native git integration"
+    planned_events:
+      - "git:status"
+      - "git:commit"
+      - "git:push"
+      - "git:pull"
+      
+  external_apis:
+    description: "External API integration"
+    planned_events:
+      - "api:register"
+      - "api:call"
+      - "api:webhook"
+
+# Meta-information for the overseer
+meta:
+  created_by: "Claude as Overseer Agent Prototype"
+  created_at: "2025-01-26"
+  design_principles:
+    - "All events must be mapped to at least one capability"
+    - "Tiers provide progressive enhancement"
+    - "DSL execution is a mid-tier capability, not top-tier"
+    - "Future evolution is built into the design"
+    - "Overseer agents can modify this structure"
+  migration_notes: |
+    To migrate from v1.0:
+    1. Map existing "base" to "minimal"
+    2. Map existing "standard" profile to "communicator" tier
+    3. Add DSL agents with "dsl_interpreter" profile
+    4. Existing orchestrators map to "orchestrator" tier

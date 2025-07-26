@@ -1,0 +1,421 @@
+# KSI Capability System v3.0 - Compositional Architecture
+# Mirrors the component system with atomic capabilities, mixins, and profiles
+# Created by: Claude as Overseer Agent
+# Date: 2025-01-26
+
+version: "3.0"
+description: "Compositional capability system mirroring KSI's component architecture"
+philosophy: |
+  Capabilities are composable building blocks, just like components.
+  This system provides:
+  - Atomic capabilities (single-purpose)
+  - Capability mixins (reusable combinations)
+  - Capability profiles (complete agent configurations)
+  - Dynamic composition and dependency resolution
+
+# ATOMIC CAPABILITIES - Single-purpose building blocks
+atomic_capabilities:
+  # System interaction atoms
+  health_check:
+    events: ["system:health"]
+    description: "Basic health check"
+    
+  help_access:
+    events: ["system:help"]
+    description: "Help system access"
+    
+  discovery:
+    events: ["system:discover"]
+    description: "System discovery"
+    
+  # State atoms
+  state_read:
+    events: ["state:get", "state:list", "state:exists"]
+    description: "Read state values"
+    
+  state_write:
+    events: ["state:set", "state:delete", "state:clear"]
+    description: "Write state values"
+    
+  entity_read:
+    events: ["state:entity:get", "state:entity:list", "state:entity:query"]
+    description: "Read entity data"
+    
+  entity_write:
+    events: ["state:entity:create", "state:entity:update", "state:entity:delete"]
+    description: "Modify entities"
+    
+  entity_relationships:
+    events: ["state:entity:add_relationship", "state:entity:remove_relationship"]
+    description: "Manage entity relationships"
+    
+  # Communication atoms
+  message_send:
+    events: ["message:send", "message:publish"]
+    description: "Send messages"
+    
+  message_receive:
+    events: ["message:subscribe", "message:unsubscribe", "message:subscriptions"]
+    description: "Receive messages"
+    
+  # Agent atoms
+  agent_status:
+    events: ["agent:status", "agent:progress", "agent:result"]
+    description: "Report agent status"
+    
+  agent_query:
+    events: ["agent:list", "agent:info"]
+    description: "Query agent information"
+    
+  agent_spawn:
+    events: ["agent:spawn", "agent:spawn_from_component"]
+    description: "Create new agents"
+    
+  agent_control:
+    events: ["agent:terminate", "agent:restart", "agent:update_config"]
+    description: "Control agent lifecycle"
+    
+  # Completion atoms
+  completion_submit:
+    events: ["completion:async"]
+    description: "Submit completion requests"
+    
+  completion_monitor:
+    events: ["completion:status", "completion:cancel", "completion:queue_status"]
+    description: "Monitor completions"
+    
+  # Monitoring atoms
+  event_monitoring:
+    events: ["monitor:get_events", "monitor:get_stats", "monitor:get_status"]
+    description: "Monitor system events"
+    
+  # Orchestration atoms
+  orchestration_control:
+    events: ["orchestration:start", "orchestration:stop", "orchestration:request_termination"]
+    description: "Control orchestrations"
+    
+  orchestration_monitor:
+    events: ["orchestration:status", "orchestration:list", "orchestration:event"]
+    description: "Monitor orchestrations"
+    
+  # Composition atoms
+  composition_read:
+    events: ["composition:list", "composition:get", "composition:get_component", "composition:discover"]
+    description: "Read compositions"
+    
+  composition_write:
+    events: ["composition:create_component", "composition:update_component", "composition:delete_component"]
+    description: "Modify compositions"
+    
+  composition_ops:
+    events: ["composition:compose", "composition:validate", "composition:rebuild_index"]
+    description: "Composition operations"
+
+# CAPABILITY MIXINS - Reusable combinations
+capability_mixins:
+  # Basic communication mixin
+  basic_communication:
+    description: "Standard inter-agent communication"
+    dependencies:
+      - message_send
+      - message_receive
+      - agent_status
+      
+  # State management mixin
+  state_management:
+    description: "Complete state handling"
+    dependencies:
+      - state_read
+      - state_write
+      - entity_read
+      - entity_write
+      - entity_relationships
+      
+  # DSL execution mixin (CRITICAL FOR BOOTSTRAP)
+  dsl_execution:
+    description: "Execute DSL patterns and emit events"
+    dependencies:
+      - agent_status        # Report execution status
+      - completion_submit   # Send messages via completion:async
+      - state_management    # Update state during execution
+      - orchestration_control  # Request termination
+    additional_events:
+      - "task:assign"       # DSL task delegation
+      - "workflow:complete" # DSL workflow completion
+      
+  # Agent coordination mixin
+  agent_coordination:
+    description: "Coordinate multiple agents"
+    dependencies:
+      - agent_query
+      - agent_spawn
+      - agent_control
+      - basic_communication
+      - completion_submit
+      
+  # Monitoring mixin
+  system_monitoring:
+    description: "Comprehensive monitoring"
+    dependencies:
+      - event_monitoring
+      - agent_query
+      - orchestration_monitor
+      
+  # Composition development mixin
+  composition_development:
+    description: "Develop and test components"
+    dependencies:
+      - composition_read
+      - composition_write
+      - composition_ops
+      - agent_spawn  # Test components by spawning
+
+# CAPABILITY PROFILES - Complete configurations
+capability_profiles:
+  # Minimal profile - absolute minimum
+  minimal:
+    description: "Bare minimum system access"
+    mixins: []
+    atoms:
+      - health_check
+      - help_access
+      - discovery
+      
+  # Observer profile - read-only
+  observer:
+    description: "System observer"
+    mixins:
+      - system_monitoring
+    atoms:
+      - state_read
+      - entity_read
+      
+  # Communicator profile - basic agent
+  communicator:
+    description: "Standard communicating agent"
+    mixins:
+      - basic_communication
+      - state_management
+    atoms: []
+      
+  # DSL Interpreter profile (NEW - FIXES BOOTSTRAP!)
+  dsl_interpreter:
+    description: "DSL execution with all required events"
+    mixins:
+      - dsl_execution
+      - basic_communication
+    atoms:
+      - event_monitoring  # Can check own events
+      
+  # Coordinator profile
+  coordinator:
+    description: "Multi-agent coordinator"
+    mixins:
+      - agent_coordination
+      - system_monitoring
+      - state_management
+    atoms: []
+      
+  # Orchestrator profile
+  orchestrator:
+    description: "Full orchestration capabilities"
+    mixins:
+      - agent_coordination
+      - composition_development
+      - system_monitoring
+    atoms:
+      - orchestration_control
+      - orchestration_monitor
+      
+  # Self-improving agent profile
+  self_improver:
+    description: "Agent that can modify components"
+    mixins:
+      - composition_development
+      - dsl_execution
+      - agent_coordination
+    additional_events:
+      - "optimization:async"
+      - "optimization:status"
+      - "optimization:get_result"
+      - "evaluation:start"
+      - "evaluation:result"
+
+# Special capability collections (for backwards compatibility)
+legacy_mappings:
+  # Map old capability names to new mixins/atoms
+  base:
+    maps_to: ["health_check", "help_access", "discovery"]
+    
+  state_read:
+    maps_to: ["state_read", "entity_read"]
+    
+  state_write:
+    maps_to: ["state_write", "entity_write", "entity_relationships"]
+    
+  agent_messaging:
+    maps_to: ["basic_communication"]
+    
+  spawn_agents:
+    maps_to: ["agent_coordination"]
+
+# Claude tool mappings (unchanged)
+claude_tools:
+  file_access:
+    description: "File system access"
+    tools: ["Read", "Write", "Edit", "MultiEdit", "Grep", "Glob", "LS", "NotebookRead", "NotebookEdit"]
+    
+  system_access:
+    description: "System commands"
+    tools: ["Bash", "Task"]
+    
+  network_access:
+    description: "Web access"
+    tools: ["WebFetch", "WebSearch"]
+    
+  task_management:
+    description: "Todo management"
+    tools: ["TodoRead", "TodoWrite"]
+
+# Dynamic capability composition rules
+composition_rules:
+  # Automatic dependency resolution
+  dependency_resolution:
+    - "When a mixin is requested, all its atomic dependencies are included"
+    - "When an atom is requested, no additional dependencies are added"
+    - "Circular dependencies are detected and rejected"
+    
+  # Event deduplication
+  event_deduplication:
+    - "If multiple atoms provide the same event, it's only included once"
+    - "Additional_events in profiles override atom definitions"
+    
+  # Inheritance patterns
+  inheritance:
+    - "Profiles can inherit from other profiles"
+    - "Child profiles add to parent capabilities, not replace"
+    - "Explicit removals must be marked with '-' prefix"
+
+# Extension mechanism for new capabilities
+extension_protocol:
+  # How to add new atomic capabilities
+  add_atom:
+    location: "atomic_capabilities"
+    required_fields: ["events", "description"]
+    validation: "All events must be unique across atoms"
+    
+  # How to create new mixins
+  add_mixin:
+    location: "capability_mixins"
+    required_fields: ["description", "dependencies"]
+    validation: "All dependencies must reference existing atoms or mixins"
+    
+  # How to define new profiles
+  add_profile:
+    location: "capability_profiles"
+    required_fields: ["description"]
+    optional_fields: ["mixins", "atoms", "additional_events", "inherits"]
+    
+  # MCP Integration Protocol
+  mcp_integration:
+    discovery_flow:
+      1: "MCP server added to system"
+      2: "mcp:discover orchestration investigates tools"
+      3: "mcp:classifier agent analyzes tool capabilities"
+      4: "mcp:integrator agent creates new atoms/mixins"
+      5: "capability:reload updates system dynamically"
+      
+    event_mapping:
+      # MCP tools become KSI events
+      mcp_tool_pattern: "mcp:{server_name}:{tool_name}"
+      example: "mcp:github:create_issue"
+      
+    classification_rules:
+      - "Read-only tools → observer atoms"
+      - "State-changing tools → management atoms"
+      - "External API tools → integration atoms"
+      - "Dangerous tools → restricted atoms"
+      
+    dynamic_update_protocol:
+      - "New atoms can be added without restart"
+      - "Existing profiles can gain new atoms"
+      - "Agents can be notified of new capabilities"
+      - "Capability version tracking enables updates"
+
+# Dynamic MCP Capabilities (added at runtime)
+dynamic_mcp_capabilities:
+  # Example of what gets added when an MCP server is integrated
+  example_github_mcp:
+    mcp_github_read:
+      events:
+        - "mcp:github:list_repos"
+        - "mcp:github:get_issue"
+        - "mcp:github:list_prs"
+      description: "GitHub read operations via MCP"
+      source: "mcp_server:github"
+      classified_by: "mcp_classifier_agent_001"
+      
+    mcp_github_write:
+      events:
+        - "mcp:github:create_issue"
+        - "mcp:github:create_pr"
+        - "mcp:github:merge_pr"
+      description: "GitHub write operations via MCP"
+      source: "mcp_server:github"
+      classified_by: "mcp_classifier_agent_001"
+      requires_approval: true
+      
+  # Placeholder for runtime additions
+  runtime_additions: {}
+
+# MCP Integration Components
+mcp_integration_components:
+  # Agents for MCP integration
+  required_agents:
+    mcp_discoverer:
+      profile: "coordinator"
+      purpose: "Discover and catalog MCP server capabilities"
+      
+    mcp_classifier:
+      profile: "self_improver"
+      purpose: "Classify MCP tools into capability atoms"
+      
+    mcp_integrator:
+      profile: "overseer"
+      purpose: "Integrate MCP tools into capability system"
+      
+  # Orchestration for MCP onboarding
+  mcp_onboarding_orchestration:
+    pattern: "orchestrations/mcp_integration"
+    phases:
+      discovery: "Catalog all tools from MCP server"
+      classification: "Determine capability categories"
+      integration: "Create atoms and update system"
+      validation: "Test new capabilities work"
+      deployment: "Make available to agents"
+
+# Capability evolution metadata
+evolution:
+  version_history:
+    v1: "Static capability→event mappings"
+    v2: "Tiered system with inheritance"
+    v3: "Compositional system mirroring components"
+    v4_planned: "Dynamic MCP integration and live updates"
+    
+  future_directions:
+    - "Capability components as first-class entities"
+    - "Runtime capability composition"
+    - "Capability optimization via DSPy"
+    - "Cross-system capability federation"
+    - "MCP servers as capability providers"
+    - "Live capability updates for running agents"
+    - "Capability marketplace/sharing"
+    
+  design_principles:
+    - "Capabilities are composable like components"
+    - "Atomic capabilities provide single-purpose access"
+    - "Mixins enable reusable patterns"
+    - "Profiles assemble complete configurations"
+    - "The system must be self-modifiable by overseer agents"
+    - "MCP tools are first-class events in KSI"
+    - "Everything is an event, everything has a capability"
