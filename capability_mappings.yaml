@@ -22,6 +22,8 @@ capabilities:
       - "state:get"
       - "state:list"
       - "state:exists"
+      - "state:entity:get"
+      - "state:entity:query"
       
   state_write:
     description: "Write access to shared state"
@@ -30,6 +32,10 @@ capabilities:
       - "state:set"
       - "state:delete"
       - "state:clear"
+      - "state:entity:create"
+      - "state:entity:update"
+      - "state:entity:delete"
+      - "state:entity:bulk_create"
       
   # Async state queues
   async_state_read:
@@ -164,6 +170,12 @@ event_patterns:
     - "state:list"
     - "state:exists"
     - "state:clear"
+    - "state:entity:create"
+    - "state:entity:update"
+    - "state:entity:delete"
+    - "state:entity:get"
+    - "state:entity:query"
+    - "state:entity:bulk_create"
     
   "async_state:*":
     - "async_state:push"

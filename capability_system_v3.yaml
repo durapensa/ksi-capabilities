@@ -42,7 +42,7 @@ atomic_capabilities:
     description: "Read entity data"
     
   entity_write:
-    events: ["state:entity:create", "state:entity:update", "state:entity:delete"]
+    events: ["state:entity:create", "state:entity:update", "state:entity:delete", "state:entity:bulk_create"]
     description: "Modify entities"
     
   entity_relationships:
