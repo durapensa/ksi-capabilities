@@ -44,7 +44,7 @@ tiers:
   orchestrator:
     description: "Complex multi-agent orchestration"
     inherits: "coordinator"
-    additional_capabilities: ["orchestration_control", "composition_management"]
+    additional_capabilities: ["orchestration_control", "routing_control", "composition_management"]
     
   # Tier 7: Administrator - System management
   administrator:
@@ -168,6 +168,17 @@ capabilities:
       - "orchestration:delete"
       - "orchestration:discover"
       - "orchestration:validate"
+      
+  routing_control:
+    description: "Dynamic routing control - modify event routing at runtime"
+    events:
+      - "routing:add_rule"
+      - "routing:modify_rule"
+      - "routing:delete_rule"
+      - "routing:query_rules"
+      - "routing:update_subscription"
+      - "routing:spawn_with_routing"
+      - "routing:get_audit_log"
       
   composition_management:
     description: "Component and composition management"

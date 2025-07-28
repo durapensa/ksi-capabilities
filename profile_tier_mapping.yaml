@@ -1,0 +1,45 @@
+# Mapping between legacy permission profiles and v2 capability tiers
+# This enables backward compatibility while transitioning to the tier system
+
+version: "1.0"
+description: "Maps legacy permission profiles to v2 capability tiers"
+
+# Direct mappings
+profile_to_tier:
+  restricted: "observer"        # Read-only access
+  standard: "communicator"      # Basic agent capabilities
+  trusted: "executor"           # Can execute tasks and DSL
+  researcher: "coordinator"     # Can spawn and coordinate agents
+  
+# Reverse mappings for profile inference
+tier_to_profile:
+  minimal: "restricted"
+  observer: "restricted"
+  communicator: "standard"
+  executor: "trusted"
+  coordinator: "researcher"
+  orchestrator: "researcher"     # Advanced researcher capabilities
+  administrator: "researcher"   # System admin still maps to researcher profile
+  overseer: "researcher"       # Full access still maps to researcher profile
+
+# Detailed capability differences
+profile_capabilities:
+  restricted:
+    description: "Minimal read-only access for observation"
+    equivalent_tier: "observer"
+    rationale: "Maps to observer tier for read-only system observation"
+    
+  standard:
+    description: "Standard agent with communication capabilities"
+    equivalent_tier: "communicator"
+    rationale: "Maps to communicator for basic messaging and state tracking"
+    
+  trusted:
+    description: "Trusted agent that can execute tasks and workflows"
+    equivalent_tier: "executor"
+    rationale: "Maps to executor for DSL execution and task performance"
+    
+  researcher:
+    description: "Advanced agent with spawning and coordination capabilities"
+    equivalent_tier: "coordinator"
+    rationale: "Maps to coordinator for multi-agent orchestration"
