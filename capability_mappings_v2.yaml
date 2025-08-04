@@ -118,7 +118,7 @@ capabilities:
       - "agent:progress"    # Report progress updates
       - "agent:result"      # Report execution results
       - "completion:async"  # Send messages to other agents
-      - "orchestration:request_termination"  # Signal completion
+      # orchestration:request_termination removed in Stage 2.4 migration
       - "task:assign"       # Delegate tasks (for DSL)
       - "workflow:complete" # Signal workflow completion
       
@@ -147,27 +147,19 @@ capabilities:
       - "agent:send_message"
       
   workflow_coordination:
-    description: "Multi-agent workflow management"
+    description: "Multi-agent workflow management via dynamic routing"
     events:
-      - "orchestration:start"
-      - "orchestration:stop"
-      - "orchestration:status"
-      - "orchestration:list"
-      - "orchestration:event"  # Receive orchestration events
+      # orchestration events removed in Stage 2.4 migration
       - "conversation:create"
       - "conversation:list"
       - "conversation:acquire_lock"
       - "conversation:release_lock"
+      - "routing:add_rule"     # Dynamic coordination
+      - "routing:modify_rule"  # Runtime adaptation
+      - "routing:delete_rule"  # Cleanup coordination
       
-  # Orchestration capabilities
-  orchestration_control:
-    description: "Full orchestration control"
-    events:
-      - "orchestration:create"
-      - "orchestration:update"
-      - "orchestration:delete"
-      - "orchestration:discover"
-      - "orchestration:validate"
+  # Orchestration capabilities removed in Stage 2.4 migration
+  # Dynamic routing provides equivalent coordination functionality
       
   routing_control:
     description: "Dynamic routing control - modify event routing at runtime"

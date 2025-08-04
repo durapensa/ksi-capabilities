@@ -89,14 +89,8 @@ atomic_capabilities:
     events: ["monitor:get_events", "monitor:get_stats", "monitor:get_status"]
     description: "Monitor system events"
     
-  # Orchestration atoms
-  orchestration_control:
-    events: ["orchestration:start", "orchestration:stop", "orchestration:request_termination"]
-    description: "Control orchestrations"
-    
-  orchestration_monitor:
-    events: ["orchestration:status", "orchestration:list", "orchestration:event"]
-    description: "Monitor orchestrations"
+  # Orchestration atoms removed in Stage 2.4 migration
+  # Dynamic routing now provides coordination capabilities
     
   # Composition atoms
   composition_read:
