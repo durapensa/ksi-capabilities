@@ -8,11 +8,21 @@ description: "Declarative mapping of events to capabilities and their relationsh
 capabilities:
   # Essential capabilities every agent needs
   base:
-    description: "Core system access"
+    description: "Core system access and essential communication"
     events:
+      # Core system access
       - "system:health"
       - "system:help"
       - "system:discover"
+      # Essential agent communication (CRITICAL for all agents)
+      - "agent:status"        # Agents must report their status
+      - "completion:async"    # Agents must be able to communicate
+      # Basic monitoring
+      - "monitor:log"         # Agents should log their activity
+      - "monitor:event"       # Agents can report events
+      # Read-only state access for context
+      - "state:get"           # Read state for context
+      - "state:entity:get"    # Read entity state (needed for routing checks)
     always_enabled: true
     
   # State management capabilities
